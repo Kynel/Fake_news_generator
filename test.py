@@ -1,5 +1,5 @@
-import tensorflow
+import tensorflow as tf
 import numpy as np
 
-print(tensorflow.__version__)
-# it should be 1.0.0-beta1
+print(tf.__version__)
+# it should be 2.0.0-beta1
