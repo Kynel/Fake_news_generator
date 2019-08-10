@@ -11,4 +11,5 @@ Make "Fake news generator" for educational purpose. with RNN
 ### 사용한 라이브러리 및 코드
 
 Google Tensorflow / Keras
+
 https://github.com/jason9693/NNST-Naver-News-for-Standard-and-Technology-Database
