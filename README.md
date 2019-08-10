@@ -13,3 +13,5 @@ Make "Fake news generator" for educational purpose. with RNN
 Google Tensorflow / Keras
 
 https://github.com/jason9693/NNST-Naver-News-for-Standard-and-Technology-Database
+
+https://github.com/deeplearningzerotoall
