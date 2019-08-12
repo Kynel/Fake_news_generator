@@ -88,7 +88,7 @@ print(t_len, t_input, t_output)
 
 # hyper-parameters
 epochs = 100
-batch_size = 4
+batch_size = 100
 learning_rate = .005
 total_step = epochs / batch_size
 buffer_size = 100
@@ -209,12 +209,13 @@ def loss_function(real, pred):
 # optimizer = tf.train.AdamOptimizer() -> in 2.0 make error
 optimizer = tf.optimizers.Adam()
 
+# 일단 지워둠
 # creating check point (Object-based saving)
-checkpoint_dir = './data_out/training_checkpoints'
-checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
-checkpoint = tf.train.Checkpoint(optimizer=optimizer,
-                                 encoder=encoder,
-                                 decoder=decoder)
+#checkpoint_dir = './data_out/training_checkpoints'
+#checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
+#checkpoint = tf.train.Checkpoint(optimizer=optimizer,
+#                                 encoder=encoder,
+#                                 decoder=decoder)
 
 # create writer for tensorboard
 # in 2.0 tf.contrib deleted....
@@ -260,7 +261,8 @@ for epoch in range(EPOCHS):
             print('Epoch {} Loss {:.4f} Batch Loss {:.4f}'.format(epoch,
                                                                   total_loss / n_batch,
                                                                   batch_loss.numpy()))
-            checkpoint.save(file_prefix=checkpoint_prefix)
+            # 일단 지워둠
+            #checkpoint.save(file_prefix=checkpoint_prefix)
 
 
 def evaluate(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_length_targ):
