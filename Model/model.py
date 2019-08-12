@@ -87,7 +87,7 @@ t_len, t_input, t_output = preprocess(sequences=targets,
 print(t_len, t_input, t_output)
 
 # hyper-parameters
-epochs = 100
+epochs = 300
 batch_size = 100
 learning_rate = .005
 total_step = epochs / batch_size
@@ -211,11 +211,11 @@ optimizer = tf.optimizers.Adam()
 
 # 일단 지워둠
 # creating check point (Object-based saving)
-#checkpoint_dir = './data_out/training_checkpoints'
-#checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
-#checkpoint = tf.train.Checkpoint(optimizer=optimizer,
-#                                 encoder=encoder,
-#                                 decoder=decoder)
+checkpoint_dir = './data_out/training_checkpoints'
+checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
+checkpoint = tf.train.Checkpoint(optimizer=optimizer,
+                                 encoder=encoder,
+                                 decoder=decoder)
 
 # create writer for tensorboard
 # in 2.0 tf.contrib deleted....
@@ -261,8 +261,8 @@ for epoch in range(EPOCHS):
             print('Epoch {} Loss {:.4f} Batch Loss {:.4f}'.format(epoch,
                                                                   total_loss / n_batch,
                                                                   batch_loss.numpy()))
-            # 일단 지워둠
-            #checkpoint.save(file_prefix=checkpoint_prefix)
+    #일단 지워둠
+    checkpoint.save(file_prefix=checkpoint_prefix)
 
 
 def evaluate(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_length_targ):
@@ -308,6 +308,6 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 
 
 # test!!!
-sentence = '문재인 내년 7월'
+sentence = '문재인 내년 가상화폐'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
