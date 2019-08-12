@@ -228,3 +228,5 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/python,pycharm
+
+Model/data_out/training_checkpoints/
