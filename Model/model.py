@@ -87,7 +87,7 @@ t_len, t_input, t_output = preprocess(sequences=targets,
 print(t_len, t_input, t_output)
 
 # hyper-parameters
-epochs = 300
+epochs = 100
 batch_size = 100
 learning_rate = .005
 total_step = epochs / batch_size
@@ -221,7 +221,7 @@ optimizer = tf.optimizers.Adam()
 # in 2.0 tf.contrib deleted....
 #summary_writer = tf.contrib.summary.create_file_writer(logdir=checkpoint_dir)
 
-EPOCHS = 100
+EPOCHS = epochs
 
 for epoch in range(EPOCHS):
 
