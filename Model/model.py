@@ -54,7 +54,7 @@ def preprocess(sequences, max_len, dic, mode='source'):
         s_input = list(map(lambda sentence: [dic.get(token) for token in sentence], sequences))
         s_len = list(map(lambda sentence: len(sentence), s_input))
         # source의 길이는 3으로 고정될 것이므로 pad_sequences가 필요없어서 주석처리
-        # s_input = pad_sequences(sequences=s_input, maxlen=max_len, padding='post', truncating='post')
+        s_input = pad_sequences(sequences=s_input, maxlen=max_len, padding='post', truncating='post')
         return s_len, s_input
 
     elif mode == 'target':
@@ -75,7 +75,7 @@ def preprocess(sequences, max_len, dic, mode='source'):
 
 
 # sources preprocess test
-s_max_len = 3 # not needed
+s_max_len = 3  # not needed
 s_len, s_input = preprocess(sequences=sources,
                             max_len=s_max_len, dic=source2idx, mode='source')
 print(s_len, s_input)
@@ -261,3 +261,51 @@ for epoch in range(EPOCHS):
                                                                   total_loss / n_batch,
                                                                   batch_loss.numpy()))
             checkpoint.save(file_prefix=checkpoint_prefix)
+
+
+def evaluate(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_length_targ):
+    # sentence = preprocess_sentence(sentence)
+
+    inputs = [inp_lang[i] for i in sentence.split(' ')]
+    # 필요하지않아서 주석처리
+    inputs = tf.keras.preprocessing.sequence.pad_sequences([inputs], maxlen=max_length_inp, padding='post')
+    inputs = tf.convert_to_tensor(inputs)
+
+    result = ''
+
+    hidden = [tf.zeros((1, units))]
+    enc_out, enc_hidden = encoder(inputs, hidden)
+
+    dec_hidden = enc_hidden
+    dec_input = tf.expand_dims([targ_lang['<bos>']], 0)
+
+    for t in range(max_length_targ):
+        predictions, dec_hidden, attention_weights = decoder(dec_input, dec_hidden, enc_out)
+
+        predicted_id = tf.argmax(predictions[0]).numpy()
+
+        result += idx2target[predicted_id] + ' '
+
+        if idx2target.get(predicted_id) == '<eos>':
+            return result, sentence
+
+        # the predicted ID is fed back into the model
+        dec_input = tf.expand_dims([predicted_id], 0)
+
+    return result, sentence
+
+# result, sentence = evaluate(sentence, encoder, decoder, source2idx, target2idx,
+#                                             s_max_len, t_max_len)
+
+
+def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_length_targ):
+    result, sentence = evaluate(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_length_targ)
+
+    print('Input: {}'.format(sentence))
+    print('Predicted translation: {}'.format(sentence + ' ' + result))
+
+
+# test!!!
+sentence = '문재인 내년 7월'
+
+test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
