@@ -15,17 +15,17 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from pprint import pprint
 import numpy as np
 import os
+import pickle
 
-print(tf.__version__)
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
-sources = [['한미훈련', '불만', '金친서'],
-     ['문재인', '내년', '7월'],
-     ['서울대', '이어', '고대도'],
-     ['아베를', '오만하게', '만든']]
-targets = [['공개', '…', '트럼프', '나도', '안', '좋아해'],
-           ['끌어내리자', '막말', '난무', '우리공화당', '집회'],
-           ['최악동문', '투표', '…', '1위', '장하성', '2위', '이명박'],
-           ['박정희', '박근혜의', '원죄']]
+sources, targets = [], []
+with open(os.path.join(ROOT_DIR,'Data_Preprocess','sources.dat'), 'rb') as sources_stream:
+    sources = pickle.load(sources_stream)
+with open(os.path.join(ROOT_DIR,'Data_Preprocess','targets.dat'), 'rb') as targets_stream:
+    targets = pickle.load(targets_stream)
+
+
 
 # vocabulary for sources
 s_vocab = list(set(sum(sources, [])))
