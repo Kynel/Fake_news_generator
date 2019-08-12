@@ -57,8 +57,8 @@ def __clean_text__(text):
     # 원본
     # cleaned_text = re.sub('[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]',
     #                       ' ', text)
-    cleaned_text = re.sub('[\{\}\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]',
-                          ' ', text)
+    cleaned_text = re.sub('[\{\}?,;:|*~`!^@\#$]',
+                          '', text)
 
     return cleaned_text
 
