@@ -87,7 +87,7 @@ t_len, t_input, t_output = preprocess(sequences=targets,
 print(t_len, t_input, t_output)
 
 # hyper-parameters
-epochs = 100
+epochs = 1
 batch_size = 100
 learning_rate = .005
 total_step = epochs / batch_size
@@ -221,11 +221,18 @@ optimizer = tf.optimizers.Adam()
 
 # 일단 지워둠
 # creating check point (Object-based saving)
-checkpoint_dir = './data_out/training_checkpoints'
-checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
-checkpoint = tf.train.Checkpoint(optimizer=optimizer,
-                                 encoder=encoder,
-                                 decoder=decoder)
+# 새로운 방식의 체크포인트 불러오기 동작하는것같음 앙기모띠
+# https://www.tensorflow.org/beta/guide/checkpoints
+ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=optimizer, encoder=encoder, decoder=decoder)
+manager = tf.train.CheckpointManager(ckpt, './data_out/training_checkpoints', max_to_keep=3)
+ckpt.restore(manager.latest_checkpoint)
+
+
+#checkpoint_dir = './data_out/training_checkpoints'
+#checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
+#checkpoint = tf.train.Checkpoint(optimizer=optimizer,
+#                                 encoder=encoder,
+#                                 decoder=decoder)
 
 # create writer for tensorboard
 # in 2.0 tf.contrib deleted....
@@ -233,55 +240,7 @@ checkpoint = tf.train.Checkpoint(optimizer=optimizer,
 
 EPOCHS = epochs
 
-# 체크 포인트 사용할때 아래코드 사용 지울부분 지우기(임시)
-#checkpoint.restore('./data_out/training_checkpoints/ckpt-1.index')
-
-# and delete this part-----------------------------------------------------------------------------------------------
-for epoch in range(EPOCHS):
-
-    # initialize
-    hidden = encoder.initialize_hidden_state()
-    total_loss = 0
-
-    for i, (s_len, s_input, t_len, t_input, t_output) in enumerate(data):
-        loss = 0
-        with tf.GradientTape() as tape:
-            enc_output, enc_hidden = encoder(s_input, hidden)
-
-            dec_hidden = enc_hidden
-
-            dec_input = tf.expand_dims([target2idx['<bos>']] * batch_size, 1)
-
-            # Teacher Forcing: feeding the target as the next input
-            for t in range(1, t_input.shape[1]):
-                predictions, dec_hidden, _ = decoder(dec_input, dec_hidden, enc_output)
-
-                loss += loss_function(t_input[:, t], predictions)
-
-                dec_input = tf.expand_dims(t_input[:, t], 1) # using teacher forcing
-
-            batch_loss = (loss / int(t_input.shape[1]))
-
-            total_loss += batch_loss
-
-            variables = encoder.variables + decoder.variables
-
-            gradient = tape.gradient(loss, variables)
-
-            optimizer.apply_gradients(zip(gradient, variables))
-
-        if epoch % 1 == 0:
-            # save model every 10 epoch
-            print('Epoch {} Loss {:.4f} Batch Loss {:.4f}'.format(epoch,
-                                                                  total_loss / n_batch,
-                                                                  batch_loss.numpy()))
-    #일단 지워둠
-    #checkpoint.save(file_prefix=checkpoint_prefix)
-
-# 학습된 모델 저장
-checkpoint.save(file_prefix=checkpoint_prefix)
-
-# and delete this part-----------------------------------------------------------------------------------------------
+#checkpoint.restore('./data_out/training_checkpoints')
 
 def evaluate(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_length_targ):
     # sentence = preprocess_sentence(sentence)
