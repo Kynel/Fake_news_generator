@@ -45,6 +45,11 @@ idx2target = {idx: word for idx, word in enumerate(t_vocab)}
 
 pprint(target2idx)
 
+with open(os.path.join(os.path.dirname(__file__),'source2idx.dat'), 'wb') as source2idx_stream:
+    pickle.dump(source2idx, source2idx_stream)
+with open(os.path.join(os.path.dirname(__file__),'target2idx.dat'), 'wb') as target2idx_stream:
+    pickle.dump(target2idx, target2idx_stream)
+
 
 def preprocess(sequences, max_len, dic, mode='source'):
     assert mode in ['source', 'target'], 'source와 target 중에 선택'
