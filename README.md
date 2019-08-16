@@ -26,5 +26,3 @@ model_test.py를 실행한후, 콘솔에서 sentence의 값을 변경하고 test
 (현재 epoch=100 으로 학습되어 있음)
 
 model.py에서 학습완료된 모델에서 볼수있는 값과 model_test.py에 입력하여 볼 수 있는 값이 같은것으로 동일한 모델을 불러왔음을 알 수 있다.
-
-model_test.py에 불필요한것들을 제거해야하는데 그건 자고와서함
