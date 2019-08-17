@@ -285,6 +285,6 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 
 
 # test!!!
-sentence = '문재인 아베 무역'
+sentence = '문재인'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
