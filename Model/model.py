@@ -11,8 +11,6 @@ import matplotlib.pyplot as plt
 from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-
-from pprint import pprint
 import numpy as np
 import os
 import pickle
@@ -25,25 +23,16 @@ with open(os.path.join(ROOT_DIR,'Data_Preprocess','sources.dat'), 'rb') as sourc
 with open(os.path.join(ROOT_DIR,'Data_Preprocess','targets.dat'), 'rb') as targets_stream:
     targets = pickle.load(targets_stream)
 
+source2idx, idx2source, target2idx, idx2target = None, None, None, None
 
-
-# vocabulary for sources
-s_vocab = list(set(sum(sources, [])))
-s_vocab.sort()
-s_vocab = ['<pad>'] + s_vocab
-source2idx = {word: idx for idx, word in enumerate(s_vocab)}
-idx2source = {idx: word for idx, word in enumerate(s_vocab)}
-
-pprint(source2idx)
-
-# vocabulary for tagrets
-t_vocab = list(set(sum(targets, [])))
-t_vocab.sort()
-t_vocab = ['<pad>', '<bos>', '<eos>'] + t_vocab
-target2idx = {word: idx for idx, word in enumerate(t_vocab)}
-idx2target = {idx: word for idx, word in enumerate(t_vocab)}
-
-pprint(target2idx)
+with open(os.path.join(os.path.dirname(__file__), 'source2idx.dat'), 'rb') as source2idx_stream:
+    source2idx = pickle.load(source2idx_stream)
+with open(os.path.join(os.path.dirname(__file__), 'idx2source.dat'), 'rb') as idx2source_stream:
+    idx2source = pickle.load(idx2source_stream)
+with open(os.path.join(os.path.dirname(__file__), 'target2idx.dat'), 'rb') as target2idx_stream:
+    target2idx = pickle.load(target2idx_stream)
+with open(os.path.join(os.path.dirname(__file__), 'idx2target.dat'), 'rb') as idx2target_stream:
+    idx2target = pickle.load(idx2target_stream)
 
 
 def preprocess(sequences, max_len, dic, mode='source'):
@@ -64,7 +53,8 @@ def preprocess(sequences, max_len, dic, mode='source'):
         t_input = list(map(lambda sentence: ['<bos>'] + sentence + ['<eos>'], sequences))
         t_input = list(map(lambda sentence: [dic.get(token) for token in sentence], t_input))
         t_len = list(map(lambda sentence: len(sentence), t_input))
-        t_input = pad_sequences(sequences=t_input, maxlen=max_len, padding='post', truncating='post') # truncating: 길이가 초과할경우 어디서부터 유효할지
+        t_input = pad_sequences(sequences=t_input, maxlen=max_len, padding='post',
+                                truncating='post')  # truncating: 길이가 초과할경우 어디서부터 유효할지
 
         # decoder output
         t_output = list(map(lambda sentence: sentence + ['<eos>'], sequences))
@@ -87,12 +77,12 @@ t_len, t_input, t_output = preprocess(sequences=targets,
 print(t_len, t_input, t_output)
 
 # hyper-parameters
-epochs = 100
+epochs = 1
 batch_size = 100
 learning_rate = .005
 total_step = epochs / batch_size
 buffer_size = 100
-n_batch = buffer_size//batch_size  # //: 몫
+n_batch = buffer_size // batch_size  # //: 몫
 embedding_dim = 32
 units = 128
 
@@ -100,23 +90,25 @@ units = 128
 data = tf.data.Dataset.from_tensor_slices((s_len, s_input, t_len, t_input, t_output))
 data = data.shuffle(buffer_size=buffer_size)
 data = data.batch(batch_size=batch_size)
+
+
 # iterator.get_next() -> pop (s_len, s_input, t_len, t_input, t_output)
 
 
-#def gru(units):  # gru: 순환 RNN (https://www.tensorflow.org/api_docs/python/tf/keras/layers/CuDNNGRU)
-    # 2.0 알파에서는 CuDNNGRU에 문제가 있나봄 or 필요없게 통합
-    #if tf.test.is_gpu_available():
-    #    return tf.keras.layers.CuDNNGRU(units,
-    #                                    return_sequences=True,
-    #                                    return_state=True,
-    #                                    recurrent_initializer='glorot_uniform')
-    #else:
-    #return tf.keras.layers.GRU(units,
-    #                           return_sequences=True,
-    #                           return_state=True,
-    #                           recurrent_activation='sigmoid',
-    #                           recurrent_initializer='glorot_uniform'
-    #                           )
+# def gru(units):  # gru: 순환 RNN (https://www.tensorflow.org/api_docs/python/tf/keras/layers/CuDNNGRU)
+# 2.0 알파에서는 CuDNNGRU에 문제가 있나봄 or 필요없게 통합
+# if tf.test.is_gpu_available():
+#    return tf.keras.layers.CuDNNGRU(units,
+#                                    return_sequences=True,
+#                                    return_state=True,
+#                                    recurrent_initializer='glorot_uniform')
+# else:
+# return tf.keras.layers.GRU(units,
+#                           return_sequences=True,
+#                           return_state=True,
+#                           recurrent_activation='sigmoid',
+#                           recurrent_initializer='glorot_uniform'
+#                           )
 
 
 class Encoder(tf.keras.Model):
@@ -126,11 +118,11 @@ class Encoder(tf.keras.Model):
         self.enc_units = enc_units
         self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
         self.gru = tf.keras.layers.GRU(self.enc_units,
-                               return_sequences=True,
-                               return_state=True,
-                               recurrent_activation='sigmoid',
-                               recurrent_initializer='glorot_uniform'
-                               )
+                                       return_sequences=True,
+                                       return_state=True,
+                                       recurrent_activation='sigmoid',
+                                       recurrent_initializer='glorot_uniform'
+                                       )
 
     def __call__(self, x, hidden):
         x = self.embedding(x)
@@ -148,11 +140,11 @@ class Decoder(tf.keras.Model):
         self.dec_units = dec_units
         self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
         self.gru = tf.keras.layers.GRU(self.dec_units,
-                               return_sequences=True,
-                               return_state=True,
-                               recurrent_activation='sigmoid',
-                               recurrent_initializer='glorot_uniform'
-                               )
+                                       return_sequences=True,
+                                       return_state=True,
+                                       recurrent_activation='sigmoid',
+                                       recurrent_initializer='glorot_uniform'
+                                       )
         self.fc = tf.keras.layers.Dense(vocab_size)
 
         # used for attention
@@ -229,12 +221,12 @@ checkpoint = tf.train.Checkpoint(optimizer=optimizer,
 
 # create writer for tensorboard
 # in 2.0 tf.contrib deleted....
-#summary_writer = tf.contrib.summary.create_file_writer(logdir=checkpoint_dir)
+# summary_writer = tf.contrib.summary.create_file_writer(logdir=checkpoint_dir)
 
 EPOCHS = epochs
 
 # 체크 포인트 사용할때 아래코드 사용 지울부분 지우기(임시)
-#checkpoint.restore('./data_out/training_checkpoints/ckpt-1.index')
+# checkpoint.restore('./data_out/training_checkpoints/ckpt-1.index')
 
 # and delete this part-----------------------------------------------------------------------------------------------
 for epoch in range(EPOCHS):
@@ -258,7 +250,7 @@ for epoch in range(EPOCHS):
 
                 loss += loss_function(t_input[:, t], predictions)
 
-                dec_input = tf.expand_dims(t_input[:, t], 1) # using teacher forcing
+                dec_input = tf.expand_dims(t_input[:, t], 1)  # using teacher forcing
 
             batch_loss = (loss / int(t_input.shape[1]))
 
@@ -275,11 +267,12 @@ for epoch in range(EPOCHS):
             print('Epoch {} Loss {:.4f} Batch Loss {:.4f}'.format(epoch,
                                                                   total_loss / n_batch,
                                                                   batch_loss.numpy()))
-    #일단 지워둠
-    #checkpoint.save(file_prefix=checkpoint_prefix)
+    # 일단 지워둠
+    # checkpoint.save(file_prefix=checkpoint_prefix)
 
 # 학습된 모델 저장
 checkpoint.save(file_prefix=checkpoint_prefix)
+
 
 # and delete this part-----------------------------------------------------------------------------------------------
 
@@ -314,6 +307,7 @@ def evaluate(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, ma
 
     return result, sentence
 
+
 # result, sentence = evaluate(sentence, encoder, decoder, source2idx, target2idx,
 #                                             s_max_len, t_max_len)
 
@@ -326,6 +320,6 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 
 
 # test!!!
-sentence = '문재인 아베 무역'
+sentence = '문재인 아베 경제'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
