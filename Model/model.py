@@ -15,6 +15,10 @@ import numpy as np
 import os
 import pickle
 
+# 시간 측정
+import time
+start = time.time()
+
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 sources, targets = [], []
@@ -77,11 +81,11 @@ t_len, t_input, t_output = preprocess(sequences=targets,
 print(t_len, t_input, t_output)
 
 # hyper-parameters
-epochs = 10
-batch_size = 100
+epochs = 1000
+batch_size = 1000
 learning_rate = .005
 total_step = epochs / batch_size
-buffer_size = 100
+buffer_size = 1000
 n_batch = buffer_size // batch_size  # //: 몫
 embedding_dim = 32
 units = 128
@@ -323,3 +327,6 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 sentence = '문재인 경제 회생'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
+
+# 시간 측정 종료
+print("time :", time.time() - start)
