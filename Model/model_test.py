@@ -17,6 +17,7 @@ import numpy as np
 import os
 import pickle
 
+
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 sources, targets = [], []
@@ -25,25 +26,16 @@ with open(os.path.join(ROOT_DIR,'Data_Preprocess','sources.dat'), 'rb') as sourc
 with open(os.path.join(ROOT_DIR,'Data_Preprocess','targets.dat'), 'rb') as targets_stream:
     targets = pickle.load(targets_stream)
 
+source2idx, idx2source, target2idx, idx2target = None, None, None, None
 
-
-# vocabulary for sources
-s_vocab = list(set(sum(sources, [])))
-s_vocab.sort()
-s_vocab = ['<pad>'] + s_vocab
-source2idx = {word: idx for idx, word in enumerate(s_vocab)}
-idx2source = {idx: word for idx, word in enumerate(s_vocab)}
-
-pprint(source2idx)
-
-# vocabulary for tagrets
-t_vocab = list(set(sum(targets, [])))
-t_vocab.sort()
-t_vocab = ['<pad>', '<bos>', '<eos>'] + t_vocab
-target2idx = {word: idx for idx, word in enumerate(t_vocab)}
-idx2target = {idx: word for idx, word in enumerate(t_vocab)}
-
-pprint(target2idx)
+with open(os.path.join(os.path.dirname(__file__), 'source2idx.dat'), 'rb') as source2idx_stream:
+    source2idx = pickle.load(source2idx_stream)
+with open(os.path.join(os.path.dirname(__file__), 'idx2source.dat'), 'rb') as idx2source_stream:
+    idx2source = pickle.load(idx2source_stream)
+with open(os.path.join(os.path.dirname(__file__), 'target2idx.dat'), 'rb') as target2idx_stream:
+    target2idx = pickle.load(target2idx_stream)
+with open(os.path.join(os.path.dirname(__file__), 'idx2target.dat'), 'rb') as idx2target_stream:
+    idx2target = pickle.load(idx2target_stream)
 
 
 def preprocess(sequences, max_len, dic, mode='source'):
@@ -285,6 +277,6 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 
 
 # test!!!
-sentence = '문재인'
+sentence = '단독 문재인 정부'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
