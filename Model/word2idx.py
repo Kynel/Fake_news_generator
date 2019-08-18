@@ -29,6 +29,9 @@ idx2target = {idx: word for idx, word in enumerate(t_vocab)}
 
 pprint(target2idx)
 
+print(source2idx.__len__())
+print(target2idx.__len__())
+
 
 with open(os.path.join(os.path.dirname(__file__),'source2idx.dat'), 'wb') as source2idx_stream:
     pickle.dump(source2idx, source2idx_stream)

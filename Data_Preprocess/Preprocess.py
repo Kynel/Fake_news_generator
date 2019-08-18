@@ -63,9 +63,9 @@ def run():
     print("전처리 정상 종료")
 
 # For test.
-test()
+# test()
 # For run
-# run()
+run()
 
 
 
