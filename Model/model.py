@@ -77,7 +77,7 @@ t_len, t_input, t_output = preprocess(sequences=targets,
 print(t_len, t_input, t_output)
 
 # hyper-parameters
-epochs = 1
+epochs = 10
 batch_size = 100
 learning_rate = .005
 total_step = epochs / batch_size
@@ -320,6 +320,6 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 
 
 # test!!!
-sentence = '[단독] 경제 회생'
+sentence = '문재인 경제 회생'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
