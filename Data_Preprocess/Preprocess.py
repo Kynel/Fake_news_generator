@@ -6,7 +6,7 @@ import pickle
 
 # Directories
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
-DATA_DIR = os.path.join(ROOT_DIR,'Naver_News_Title_Crawler','data.xlsx')
+DATA_DIR = os.path.join(ROOT_DIR,'Data_Preprocess','Data','Crawldata.xlsx')
 data = pd.read_excel(DATA_DIR, sheet_name='Sheet1')
 title_list = data['text']
 
@@ -51,7 +51,7 @@ def run(input_num):
             source = title[:input_num]
             target = title[input_num:]
         except:
-            print("파싱 오류. 제목의 단어 수가 너무 작거나, 파싱할 수 없는 내용 index:" + idx)
+            print("파싱 오류. 제목의 단어 수가 너무 작거나, 파싱할 수 없는 내용 index:" + str(idx))
             break
         sources.append(source)
         targets.append(target)
@@ -68,7 +68,9 @@ def run(input_num):
 # run의 파라미터로 넣은 개수가 바로 source의 갯수이다.
 # 예를 들어, 3을 넣으면 문장을 띄어쓰기 기준으로 3개 / 나머지 로 나눠서 저장시킨다.
 
-run(3)
+print("source로 넣을 인풋의 갯수(Dimension) 입력. 입력한 갯수만큼의 첫 단어들/나머지 단어들로 분할된 리스트를 출력하여 저장합니다.\n")
+input_value = input()
+run(input_value)
 
 
 
