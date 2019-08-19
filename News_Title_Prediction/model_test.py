@@ -69,7 +69,7 @@ optimizer = tf.optimizers.Adam()
 # 새로운 방식의 체크포인트 불러오기 동작하는것같음 앙기모띠
 # https://www.tensorflow.org/beta/guide/checkpoints
 ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=optimizer, encoder=encoder, decoder=decoder)
-manager = tf.train.CheckpointManager(ckpt, './data_out/training_checkpoints', max_to_keep=3)
+manager = tf.train.CheckpointManager(ckpt, './data_out/training_checkpoints/3words_input', max_to_keep=3)
 ckpt.restore(manager.latest_checkpoint).expect_partial()
 
 #checkpoint.restore('./data_out/training_checkpoints')

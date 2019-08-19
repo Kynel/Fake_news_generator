@@ -229,4 +229,4 @@ dmypy.json
 
 # End of https://www.gitignore.io/api/python,pycharm
 
-Model/data_out/training_checkpoints/
+News_Title_Prediction/data_out/training_checkpoints/

@@ -1,8 +1,9 @@
 # with deep learning zero to all season 2
+# When the 3D-input gets
 
 # Import Tensorflow >= 1.10 and enable eager execution
 import tensorflow as tf
-from RNN_training import preprocess, Encoder, Decoder
+from RNN_training import preprocess, Encoder, Decoder, loss_function
 
 # not needed anymore?!
 # tf.enable_eager_execution()
@@ -25,20 +26,20 @@ units = 128
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 sources, targets = [], []
-with open(os.path.join(ROOT_DIR,'Data_Preprocess','sources.dat'), 'rb') as sources_stream:
+with open(os.path.join(ROOT_DIR,'Data_Preprocess','Data','sources3.dat'), 'rb') as sources_stream:
     sources = pickle.load(sources_stream)
-with open(os.path.join(ROOT_DIR,'Data_Preprocess','targets.dat'), 'rb') as targets_stream:
+with open(os.path.join(ROOT_DIR,'Data_Preprocess','Data','targets3.dat'), 'rb') as targets_stream:
     targets = pickle.load(targets_stream)
 
 source2idx, idx2source, target2idx, idx2target = None, None, None, None
 
-with open(os.path.join(os.path.dirname(__file__), 'source2idx.dat'), 'rb') as source2idx_stream:
+with open(os.path.join(os.path.dirname(__file__), 'data_out', 'source2idx_3.dat'), 'rb') as source2idx_stream:
     source2idx = pickle.load(source2idx_stream)
-with open(os.path.join(os.path.dirname(__file__), 'idx2source.dat'), 'rb') as idx2source_stream:
+with open(os.path.join(os.path.dirname(__file__), 'data_out', 'idx2source_3.dat'), 'rb') as idx2source_stream:
     idx2source = pickle.load(idx2source_stream)
-with open(os.path.join(os.path.dirname(__file__), 'target2idx.dat'), 'rb') as target2idx_stream:
+with open(os.path.join(os.path.dirname(__file__), 'data_out', 'target2idx_3.dat'), 'rb') as target2idx_stream:
     target2idx = pickle.load(target2idx_stream)
-with open(os.path.join(os.path.dirname(__file__), 'idx2target.dat'), 'rb') as idx2target_stream:
+with open(os.path.join(os.path.dirname(__file__), 'data_out', 'idx2target_3.dat'), 'rb') as idx2target_stream:
     idx2target = pickle.load(idx2target_stream)
 
 
