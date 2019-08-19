@@ -6,14 +6,22 @@ import tensorflow as tf
 # not needed anymore?!
 # tf.enable_eager_execution()
 
-import matplotlib.pyplot as plt
-
 from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 import numpy as np
 import os
 import pickle
+
+# hyper-parameters
+epochs = 25
+batch_size = 250
+learning_rate = .005
+total_step = epochs / batch_size
+buffer_size = 300
+n_batch = buffer_size // batch_size  # //: 몫
+embedding_dim = 32
+units = 128
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -76,15 +84,6 @@ t_len, t_input, t_output = preprocess(sequences=targets,
                                       max_len=t_max_len, dic=target2idx, mode='target')
 print(t_len, t_input, t_output)
 
-# hyper-parameters
-epochs = 10
-batch_size = 100
-learning_rate = .005
-total_step = epochs / batch_size
-buffer_size = 100
-n_batch = buffer_size // batch_size  # //: 몫
-embedding_dim = 32
-units = 128
 
 # input
 data = tf.data.Dataset.from_tensor_slices((s_len, s_input, t_len, t_input, t_output))
@@ -320,6 +319,6 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 
 
 # test!!!
-sentence = '문재인 경제 회생'
+sentence = '문재인 경제 파탄'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
