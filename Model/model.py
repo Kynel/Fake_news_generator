@@ -217,7 +217,7 @@ optimizer = tf.optimizers.Adam()
 
 # 일단 지워둠
 # creating check point (Object-based saving)
-checkpoint_dir = './data_out/training_checkpoints'
+checkpoint_dir = './data_out/training_checkpoints/3words_input'
 checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
 checkpoint = tf.train.Checkpoint(optimizer=optimizer,
                                  encoder=encoder,

@@ -67,7 +67,7 @@ def preprocess(sequences, max_len, dic, mode='source'):
 
 
 # sources preprocess test
-s_max_len = 3  # not needed
+s_max_len = 2  # not needed
 s_len, s_input = preprocess(sequences=sources,
                             max_len=s_max_len, dic=source2idx, mode='source')
 print(s_len, s_input)
