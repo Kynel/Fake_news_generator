@@ -277,6 +277,6 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 
 
 # test!!!
-sentence = '한국당 선거'
+sentence = '문재인 vs 이명박'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)

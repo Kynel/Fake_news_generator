@@ -6,12 +6,18 @@ import tensorflow as tf
 # not needed anymore?!
 # tf.enable_eager_execution()
 
+import matplotlib.pyplot as plt
+
 from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 import numpy as np
 import os
 import pickle
+
+# 시간 측정
+import time
+start = time.time()
 
 # hyper-parameters
 epochs = 25
@@ -212,7 +218,7 @@ optimizer = tf.optimizers.Adam()
 
 # 일단 지워둠
 # creating check point (Object-based saving)
-checkpoint_dir = './data_out/training_checkpoints'
+checkpoint_dir = './data_out/training_checkpoints/3words_input'
 checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
 checkpoint = tf.train.Checkpoint(optimizer=optimizer,
                                  encoder=encoder,
@@ -319,6 +325,9 @@ def test(sentence, encoder, decoder, inp_lang, targ_lang, max_length_inp, max_le
 
 
 # test!!!
-sentence = '문재인 경제 파탄'
+sentence = '문재인 경제 회생'
 
 test(sentence, encoder, decoder, source2idx, target2idx, s_max_len, t_max_len)
+
+# 시간 측정 종료
+print("batch_size: {}, epoch: {}, time : {:.1f}min".format(batch_size, epochs, (time.time() - start) / 60))
