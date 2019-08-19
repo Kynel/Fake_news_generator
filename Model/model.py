@@ -19,6 +19,16 @@ import pickle
 import time
 start = time.time()
 
+# hyper-parameters
+epochs = 25
+batch_size = 250
+learning_rate = .005
+total_step = epochs / batch_size
+buffer_size = 300
+n_batch = buffer_size // batch_size  # //: 몫
+embedding_dim = 32
+units = 128
+
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 sources, targets = [], []
@@ -80,15 +90,6 @@ t_len, t_input, t_output = preprocess(sequences=targets,
                                       max_len=t_max_len, dic=target2idx, mode='target')
 print(t_len, t_input, t_output)
 
-# hyper-parameters
-epochs = 1
-batch_size = 1000
-learning_rate = .005
-total_step = epochs / batch_size
-buffer_size = 1000
-n_batch = buffer_size // batch_size  # //: 몫
-embedding_dim = 32
-units = 128
 
 # input
 data = tf.data.Dataset.from_tensor_slices((s_len, s_input, t_len, t_input, t_output))

@@ -22,20 +22,20 @@ start = time.time()
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 sources, targets = [], []
-with open(os.path.join(ROOT_DIR,'Data_Preprocess','sources.dat'), 'rb') as sources_stream:
+with open(os.path.join(ROOT_DIR,'Data_Preprocess','sources2.dat'), 'rb') as sources_stream:
     sources = pickle.load(sources_stream)
-with open(os.path.join(ROOT_DIR,'Data_Preprocess','targets.dat'), 'rb') as targets_stream:
+with open(os.path.join(ROOT_DIR,'Data_Preprocess','targets2.dat'), 'rb') as targets_stream:
     targets = pickle.load(targets_stream)
 
 source2idx, idx2source, target2idx, idx2target = None, None, None, None
 
-with open(os.path.join(os.path.dirname(__file__), 'source2idx.dat'), 'rb') as source2idx_stream:
+with open(os.path.join(os.path.dirname(__file__), 'source2idx_2.dat'), 'rb') as source2idx_stream:
     source2idx = pickle.load(source2idx_stream)
-with open(os.path.join(os.path.dirname(__file__), 'idx2source.dat'), 'rb') as idx2source_stream:
+with open(os.path.join(os.path.dirname(__file__), 'idx2source_2.dat'), 'rb') as idx2source_stream:
     idx2source = pickle.load(idx2source_stream)
-with open(os.path.join(os.path.dirname(__file__), 'target2idx.dat'), 'rb') as target2idx_stream:
+with open(os.path.join(os.path.dirname(__file__), 'target2idx_2.dat'), 'rb') as target2idx_stream:
     target2idx = pickle.load(target2idx_stream)
-with open(os.path.join(os.path.dirname(__file__), 'idx2target.dat'), 'rb') as idx2target_stream:
+with open(os.path.join(os.path.dirname(__file__), 'idx2target_2.dat'), 'rb') as idx2target_stream:
     idx2target = pickle.load(idx2target_stream)
 
 
@@ -82,7 +82,7 @@ print(t_len, t_input, t_output)
 
 # hyper-parameters
 epochs = 1
-batch_size = 1000
+batch_size = 250
 learning_rate = .005
 total_step = epochs / batch_size
 buffer_size = 1000

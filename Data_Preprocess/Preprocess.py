@@ -7,11 +7,11 @@ import pickle
 # Directories
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(ROOT_DIR,'Naver_News_Title_Crawler','data.xlsx')
-
 data = pd.read_excel(DATA_DIR, sheet_name='Sheet1')
 title_list = data['text']
 
-def test():
+
+def test(input_num):
     test_list = title_list[:10]
     sources_test = []
     targets_test = []
@@ -20,8 +20,8 @@ def test():
         result = result.split(' ')
         print(result)
         try:
-            source = result[:3]
-            target = result[3:]
+            source = result[:input_num]
+            target = result[input_num:]
         except:
             print("파싱 오류. 제목의 단어 수가 3보다 작거나, 파싱할 수 없는 내용")
             break
@@ -37,9 +37,9 @@ def test():
     print(targets_test)
 
 
-def run():
-    sources_stream = open('sources.dat', 'wb')
-    targets_stream = open('targets.dat', 'wb')
+def run(input_num):
+    sources_stream = open('sources'+str(input_num)+'.dat', 'wb')
+    targets_stream = open('targets'+str(input_num)+'.dat', 'wb')
 
     sources = []
     targets = []
@@ -48,10 +48,10 @@ def run():
     for title in title_list:
         title = title.split(' ')
         try:
-            source = title[:3]
-            target = title[3:]
+            source = title[:input_num]
+            target = title[input_num:]
         except:
-            print("파싱 오류. 제목의 단어 수가 3보다 작거나, 파싱할 수 없는 내용 index:" + idx)
+            print("파싱 오류. 제목의 단어 수가 너무 작거나, 파싱할 수 없는 내용 index:" + idx)
             break
         sources.append(source)
         targets.append(target)
@@ -65,7 +65,10 @@ def run():
 # For test.
 # test()
 # For run
-run()
+# run의 파라미터로 넣은 개수가 바로 source의 갯수이다.
+# 예를 들어, 3을 넣으면 문장을 띄어쓰기 기준으로 3개 / 나머지 로 나눠서 저장시킨다.
+
+run(3)
 
 
 
